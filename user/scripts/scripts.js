@@ -47,15 +47,16 @@
 	}
  
 
-  function loadCustomField(page)
+  function loadCustomField(page, userGuid)
 	{
 	
-		var apiUrl = packagePath + '/get_customfields.php';
+    var apiUrl = packagePath + '/get_customfields.php';
+    var data = { 'userId': userGuid };
 		$.ajax({
 			url: apiUrl,
 			method: 'POST',
 			contentType: 'application/json',
-		//	data: JSON.stringify(data),
+			data: JSON.stringify(data),
 			success: function (result)
       {
         console.log(JSON.stringify(result));
@@ -63,6 +64,12 @@
 				var embedContent = embedCustomfield != null ? embedCustomfield.result : '';
         $('#embed').val(embedContent);
 
+
+        if (page == 'storefront') {
+          let videoDiv = `<div class='store-location-box pull-right' id='video-embed'> ${embedContent} </div>`;
+          $('.store-location-box').before(videoDiv);
+
+        } 
 
 			},
 			error: function (jqXHR, status, err)
@@ -86,6 +93,9 @@
         if ($("#embed").val()) {
           var embedContent = $("#embed").val();
           saveCustomFields(embedContent);
+
+
+          
         }
 			
 			});
@@ -94,6 +104,7 @@
     
     if (pathname.indexOf('user/merchantaccount') >= 0) {
 
+      loadCustomField('storefront', $('#storefrontMerchantGuid').val());
 
      
     }

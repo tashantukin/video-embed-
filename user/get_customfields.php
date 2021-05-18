@@ -3,15 +3,15 @@ include 'callAPI.php';
 include 'admin_token.php';
 $contentBodyJson = file_get_contents('php://input');
 $content = json_decode($contentBodyJson, true);
-$invoice_number = $content['invoice_number'];
+$userId = $content['userId'];
 
 $baseUrl = getMarketplaceBaseUrl();
 $admin_token = getAdminToken();
 $customFieldPrefix = getCustomFieldPrefix();
-$userToken = $_COOKIE["webapitoken"];
-$url = $baseUrl . '/api/v2/users/'; 
-$result = callAPI("GET", $userToken, $url, false);
-$userId = $result['ID'];
+// $userToken = $_COOKIE["webapitoken"];
+// $url = $baseUrl . '/api/v2/users/'; 
+// $result = callAPI("GET", $userToken, $url, false);
+// $userId = $result['ID'];
 
 
 $url = $baseUrl . '/api/v2/users/' . $userId; 
