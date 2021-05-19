@@ -46,6 +46,27 @@
 		});
 	}
  
+  function sendEdm(content, merchantGuid, itemGuid)
+  {
+      var data = { 'itemguid': itemGuid, 'merchantguid': merchantGuid, 'notes': content};
+      var apiUrl = packagePath + '/send_edm.php';
+      $.ajax({
+          url: apiUrl,
+          method: 'POST',
+          contentType: 'application/json',
+          data: JSON.stringify(data),
+          success: function(response) {
+            $('#note-to-seller').val('');
+              //  toastr.success('Successfully saved.');
+  
+          },
+          error: function(jqXHR, status, err) {
+              //   toastr.error('---');
+            //  callback();
+          }
+      });
+  
+  }
 
   function loadCustomField(page, userGuid)
 	{
@@ -82,7 +103,7 @@
   {
 
     if (pathname.indexOf('/user/marketplace/seller-settings') > -1 || pathname.indexOf('/user/marketplace/be-seller') > -1 ) {
-      loadCustomField('settings');
+      loadCustomField('settings',userId);
       var embedVideoDiv = `<div class='item-form-group'><div class='col-md-6 gutter-30'><label>Embed Video</label><textarea id='embed' value='' style="width:100%"></textarea></div><div class='clearfix'></div></div>`;
       $("#input-displayName").parents(".item-form-group").after(embedVideoDiv);
 
@@ -108,36 +129,86 @@
 
      
     }
+    //no check out
+    if (pathname.indexOf('user/item/detail') >= 0) {
+      //hide the add to cart buttons
+      $('.add-cart-btn').hide();
+      
+      //hide the qty
+      $('#itemDetailQty').hide();
+      let orderInterestButton = `<a href="#" class="add-cart-btn" id="submit_order_interest">SUBMIT ORDER INTEREST</a>`;
+      $('.item-qty-box').append(orderInterestButton);
 
-   
+      //hide the cart on header
+      $('.cart_anchor').hide();
 
-    // getMarketplaceCustomFields(function (result) {
-    //   $.each(result, function (index, cf) {
-    //     if (cf.Name == "Delete Cart" && cf.Code.startsWith(customFieldPrefix)) {
-    //       code = cf.Code;
-    //       pluginStatus = cf.Values[0];
-    //       console.log(pluginStatus);
-    //       if (pluginStatus == "true") { 
-    //         if (userId) {
-    //           $(".header .main-nav ul .cart-menu .cart-item-counter").append(
-    //             '<span class="cart-delete-item"></li>'
-    //           );
-    //           var imgLink =
-    //             "http://" +
-    //             hostname +
-    //             "/user/plugins/" +
-    //             packageId +
-    //             "/images/delete.svg";
-    //           var img = document.createElement("img");
-    //           img.src = imgLink;
-    //           $(".header .main-nav ul .cart-delete-item").append(img);
-    //           $(".cart-delete-item img").addClass("delete");
-    //           $(".cart-menu .cart_anchor").append($(".cart-delete-item"));
-    //         }
-    //       }
-    //     }
-    //   });
-    // });
+      //add pop up
+
+      var interestModal =  `<div class="modal-overlay"></div> <div class="popup-area order-interest-popup">
+
+      <div class="wrapper">
+          <div class="order-interest-title">
+              <h5>Submit Order Interest</h5>
+              <a href="javascript:void(0)" onclick="cancel_remove()"><img src="images/closew_btn.svg"></a>
+          </div>
+          <div class="order-interest-view">
+              <div class="form-group">
+                  <label for="note-to-seller" >Note to seller</label>
+                  <textarea rows="3" class="form-control" id="note-to-seller" name="note-to-seller"></textarea>
+              </div>
+          </div>
+          
+          <div class="btn-area-flex">
+              <input type="button" id="cancel-request" value="Cancel" class="btn-cmn-outline">
+              <input data-key="" data-id=""  type="button" value="Send" id="send-request" class="btn-cmn-theme">
+          </div>
+  
+      </div>
+  
+  </div>
+  <div id="cover">`
+      
+      $('.footer').after(interestModal);
+
+      jQuery("#submit_order_interest").click(function(){
+        show_conformation();
+      });
+
+      jQuery("#send-request").click(function ()
+      {
+        sendEdm($('#note-to-seller').val(), $('#merchantGuid').val(), $('#itemGuid').val())
+        confirm_remove($(this));
+      });
+
+      jQuery("#cancel-request").click(function(){
+        cancel_remove($(this))
+      });
+
+
+
+      function show_conformation(){
+        var target =  jQuery(".popup-area.order-interest-popup");
+        var cover = jQuery("#cover");
+        target.fadeIn();
+        cover.fadeIn();
+    }
+    
+     function confirm_remove(ele) {
+        var that = jQuery(ele);
+            cancel_remove();
+    }
+
+    function cancel_remove(){
+        var target =  jQuery(".popup-area.order-interest-popup");
+        var cover = jQuery("#cover");
+        target.fadeOut();
+        cover.fadeOut();
+        jQuery(".my-btn.btn-saffron").attr('data-id','');
+        console.log("cancel remove item..");
+    }
+      
+
+    }
 
   });
 })();
