@@ -16,7 +16,6 @@ $userId = $result['ID'];
 
 // Query to get marketplace id
 
-// https://{{your-marketplace}}.arcadier.io/api/v2/users/{{userID}}
 $url = $baseUrl . '/api/v2/marketplaces/';
 $marketplaceInfo = callAPI("GET", null, $url, false);
 $url = $baseUrl . '/api/developer-packages/custom-fields?packageId=' . getPackageID();
@@ -29,8 +28,6 @@ foreach ($packageCustomFields as $cf) {
     }
 
 }
-
-//if ($jobtitle) {
     $data = [
         'CustomFields' => [
             [
@@ -43,7 +40,6 @@ foreach ($packageCustomFields as $cf) {
     $url = $baseUrl . '/api/v2/users/' . $userId;
     $result = callAPI("PUT", $admin_token['access_token'], $url, $data);
 
-//}
 
 
 

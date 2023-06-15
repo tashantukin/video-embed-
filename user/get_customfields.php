@@ -8,10 +8,6 @@ $userId = $content['userId'];
 $baseUrl = getMarketplaceBaseUrl();
 $admin_token = getAdminToken();
 $customFieldPrefix = getCustomFieldPrefix();
-// $userToken = $_COOKIE["webapitoken"];
-// $url = $baseUrl . '/api/v2/users/'; 
-// $result = callAPI("GET", $userToken, $url, false);
-// $userId = $result['ID'];
 
 
 $url = $baseUrl . '/api/v2/users/' . $userId; 
